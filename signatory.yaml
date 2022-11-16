@@ -1,0 +1,19 @@
+server:
+  address: :6732
+  utility_address: :9583
+
+vaults:
+  local_secret:
+    driver: file
+    config:
+      file: /etc/secret.json
+
+tezos:
+  tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb:
+    log_payloads: true
+    allow:
+      block:
+      endorsement:
+      preendorsement:
+      generic:
+        - transaction

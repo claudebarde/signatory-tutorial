@@ -1,0 +1,60 @@
+{
+    "operations": {},
+    "tasks": {
+        "@taqueria/plugin-ligo.compile.1668592160688": {
+            "task": "compile",
+            "plugin": "@taqueria/plugin-ligo",
+            "time": 1668592160688,
+            "output": [
+                {
+                    "contract": "oracle.mligo",
+                    "artifact": "Not compiled"
+                }
+            ]
+        },
+        "@taqueria/plugin-ligo.compile.1668592187885": {
+            "task": "compile",
+            "plugin": "@taqueria/plugin-ligo",
+            "time": 1668592187885,
+            "output": [
+                {
+                    "contract": "oracle.mligo",
+                    "artifact": "Not compiled"
+                }
+            ]
+        },
+        "@taqueria/plugin-ligo.compile.1668592214573": {
+            "task": "compile",
+            "plugin": "@taqueria/plugin-ligo",
+            "time": 1668592214574,
+            "output": [
+                {
+                    "contract": "oracle.mligo",
+                    "artifact": "Not compiled"
+                }
+            ]
+        },
+        "@taqueria/plugin-ligo.compile.1668592373515": {
+            "task": "compile",
+            "plugin": "@taqueria/plugin-ligo",
+            "time": 1668592373515,
+            "output": [
+                {
+                    "contract": "oracle.mligo",
+                    "artifact": "artifacts/oracle.tz"
+                }
+            ]
+        },
+        "@taqueria/plugin-ligo.compile.1668592470138": {
+            "task": "compile",
+            "plugin": "@taqueria/plugin-ligo",
+            "time": 1668592470139,
+            "output": [
+                {
+                    "contract": "oracle.mligo",
+                    "artifact": "artifacts/oracle.tz"
+                }
+            ]
+        }
+    }
+}

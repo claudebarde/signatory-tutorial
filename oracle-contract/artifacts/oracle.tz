@@ -1,0 +1,131 @@
+{ parameter
+    (or (or (pair %add_coins_pair (string %coins_pair) (nat %exchange_rate))
+            (string %remove_coins_pair))
+        (or (address %update_admin)
+            (list %update_prices (pair (string %coins_pair) (nat %exchange_rate))))) ;
+  storage
+    (pair (pair (address %admin)
+                (big_map %exchange_rates
+                   string
+                   (pair (nat %exchange_rate) (timestamp %last_update))))
+          (set %valid_pairs string)) ;
+  code { UNPAIR ;
+         DUP 2 ;
+         CAR ;
+         CAR ;
+         SENDER ;
+         COMPARE ;
+         EQ ;
+         IF { IF_LEFT
+                { IF_LEFT
+                    { DUP 2 ;
+                      CDR ;
+                      DUP 2 ;
+                      CAR ;
+                      PUSH bool True ;
+                      SWAP ;
+                      UPDATE ;
+                      DUP 3 ;
+                      CAR ;
+                      PAIR ;
+                      DUP ;
+                      CDR ;
+                      DIG 3 ;
+                      CAR ;
+                      CDR ;
+                      NOW ;
+                      DUP 5 ;
+                      CDR ;
+                      PAIR ;
+                      DIG 4 ;
+                      CAR ;
+                      SWAP ;
+                      SOME ;
+                      SWAP ;
+                      UPDATE ;
+                      DIG 2 ;
+                      CAR ;
+                      CAR }
+                    { DUP 2 ;
+                      CDR ;
+                      DUP 2 ;
+                      PUSH bool False ;
+                      SWAP ;
+                      UPDATE ;
+                      DUP 3 ;
+                      CAR ;
+                      PAIR ;
+                      DUP ;
+                      CDR ;
+                      DIG 3 ;
+                      CAR ;
+                      CDR ;
+                      DIG 3 ;
+                      NONE (pair nat timestamp) ;
+                      SWAP ;
+                      UPDATE ;
+                      DIG 2 ;
+                      CAR ;
+                      CAR } ;
+                  PAIR ;
+                  PAIR ;
+                  NIL operation ;
+                  PAIR }
+                { IF_LEFT
+                    { DUP 2 ;
+                      CDR ;
+                      DIG 2 ;
+                      CAR ;
+                      CDR ;
+                      DIG 2 ;
+                      PAIR ;
+                      PAIR ;
+                      NIL operation ;
+                      PAIR }
+                    { SWAP ;
+                      NIL operation ;
+                      PAIR ;
+                      SWAP ;
+                      ITER { SWAP ;
+                             UNPAIR ;
+                             DUP 2 ;
+                             CDR ;
+                             DUP 4 ;
+                             CAR ;
+                             MEM ;
+                             IF { DUP 2 ;
+                                  CDR ;
+                                  DUP 3 ;
+                                  CAR ;
+                                  CDR ;
+                                  NOW ;
+                                  DUP 6 ;
+                                  CDR ;
+                                  PAIR ;
+                                  SOME ;
+                                  DUP 6 ;
+                                  CAR ;
+                                  UPDATE ;
+                                  DIG 3 ;
+                                  CAR ;
+                                  CAR ;
+                                  PAIR ;
+                                  PAIR ;
+                                  SWAP ;
+                                  DIG 2 ;
+                                  EMIT %price_update (pair (string %coins_pair) (nat %exchange_rate)) ;
+                                  CONS ;
+                                  PAIR }
+                                { DROP 3 ; PUSH string "INVALID_COINS_PAIR" ; FAILWITH } } } } }
+            { DROP 2 ; PUSH string "NOT_AN_ADMIN" ; FAILWITH } } ;
+  view "get_exchange_rate"
+       string
+       (option (pair (nat %exchange_rate) (timestamp %last_update)))
+       { UNPAIR ;
+         DUP 2 ;
+         CDR ;
+         DUP 2 ;
+         MEM ;
+         IF { SWAP ; CAR ; CDR ; SWAP ; GET } { DROP 2 ; NONE (pair nat timestamp) } } ;
+  view "get_valid_pairs" unit (set string) { CDR ; CDR } }
+
