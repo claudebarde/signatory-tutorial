@@ -42,7 +42,7 @@ let update_prices (updates, s: update list * storage): operation list * storage 
                                     s.exchange_rates
                     }
                 else
-                    failwith "INVALID_COINS_PAIR"
+                    failwith ("INVALID_COINS_PAIR:" ^ update.coins_pair)
         )
         updates
         ([], s)
