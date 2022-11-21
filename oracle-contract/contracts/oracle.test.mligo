@@ -13,7 +13,7 @@ let test =
     let admin_address = Test.nth_bootstrap_account 1 in
     let user_address = Test.nth_bootstrap_account 2 in
 
-    let oracle_address, contract, _ = 
+    let oracle_address, _, _ = 
         let now = Tezos.get_now () in
         let initial_storage =
         {
@@ -60,7 +60,7 @@ let test =
     // should update the exchange rates in the bigmap
     let prev_storage: storage = Test.get_storage_of_address oracle_address |> Test.decompile in
     let btc_exchange_rate, eth_exchange_rate: (nat option) * (nat option) =
-        match (Big_map.find_opt "BTC-USD" storage.exchange_rates, Big_map.find_opt "ETH-USD" storage.exchange_rates) with
+        match (Big_map.find_opt "BTC-USD" prev_storage.exchange_rates, Big_map.find_opt "ETH-USD" prev_storage.exchange_rates) with
         | None, Some r -> None, Some r.exchange_rate
         | Some r, None -> Some r.exchange_rate, None
         | Some b, Some e -> Some b.exchange_rate, Some e.exchange_rate
@@ -99,23 +99,91 @@ let test =
     *)
     // should be impossible to send a transaction if not admin
     let _ = Test.set_source user_address in
+    let new_coins_pair = 
+    {
+        coins_pair = "SOL-USD" ;
+        exchange_rate = 1n ;
+    }
+    in
+    let valid_add_coins_pair_params = Add_coins_pair new_coins_pair in
+    let _ = assert (is_not_admin oracle_address valid_add_coins_pair_params) in
 
     let _ = Test.set_source admin_address in
+    // checks that the new coins pair doesn't already exist
+    let storage: storage = Test.get_storage_of_address oracle_address |> Test.decompile in
+    let _ = assert (not Set.mem new_coins_pair.coins_pair storage.valid_pairs) in
+    let _ =
+        (match Big_map.find_opt new_coins_pair.coins_pair storage.exchange_rates with
+        | None -> true
+        | Some _ -> false)
+        |> assert
+    in
+    // should add a new coins pair in the storage
+    let _ = 
+        (match Test.transfer oracle_address (Test.compile_value valid_add_coins_pair_params) 0tez with
+        | Success _ -> true
+        | Fail _ -> false)
+        |> assert
+    in
+    // checks that the coins pair has been successfully added
+    let new_storage: storage = Test.get_storage_of_address oracle_address |> Test.decompile in
+    let _ = assert (Set.mem new_coins_pair.coins_pair new_storage.valid_pairs) in
+    let _ =
+        (match Big_map.find_opt new_coins_pair.coins_pair new_storage.exchange_rates with
+        | None -> false
+        | Some entry -> 
+            if entry.exchange_rate = new_coins_pair.exchange_rate
+            then true
+            else false)
+        |> assert
+    in
 
     (*
         Tests %remove_coins_pair
     *)
     // should be impossible to send a transaction if not admin
     let _ = Test.set_source user_address in
+    let coins_pair = "SOL-USD" in
+    let valid_remove_coins_pair_params = Remove_coins_pair coins_pair in
+    let _ = assert (is_not_admin oracle_address valid_remove_coins_pair_params) in
 
     let _ = Test.set_source admin_address in
+    // should remove the coins pair from the storage
+    let _ = 
+        (match Test.transfer oracle_address (Test.compile_value valid_remove_coins_pair_params) 0tez with
+        | Success _ -> true
+        | Fail _ -> false)
+        |> assert
+    in
+    // checks that the coins pair has been successfully added
+    let storage: storage = Test.get_storage_of_address oracle_address |> Test.decompile in
+    let _ = assert (not Set.mem coins_pair storage.valid_pairs) in
+    let _ =
+        (match Big_map.find_opt coins_pair storage.exchange_rates with
+        | None -> true
+        | Some _ -> false)
+        |> assert
+    in
 
     (*
         Tests %update_admin
     *)
     // should be impossible to send a transaction if not admin
     let _ = Test.set_source user_address in
+    let update_admin_param = Update_admin user_address in
+    let _ = assert (is_not_admin oracle_address update_admin_param) in
 
+    // should update the admin address
     let _ = Test.set_source admin_address in
+    let _ = assert (storage.admin = admin_address) in
+    let _ = 
+        (match Test.transfer oracle_address (Test.compile_value update_admin_param) 0tez with
+        | Success _ -> true
+        | Fail _ -> false)
+        |> assert
+    in
+
+    let new_storage: storage = Test.get_storage_of_address oracle_address |> Test.decompile in
+    let _ = assert (new_storage.admin = user_address) in
 
     ()
