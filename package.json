@@ -26,6 +26,7 @@
     "typescript": "^4.8.4"
   },
   "dependencies": {
+    "@taquito/taquito": "^14.1.0",
     "axios": "^1.1.3",
     "coingecko-api": "^1.0.10",
     "express": "^4.18.2",
