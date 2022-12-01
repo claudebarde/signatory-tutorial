@@ -32,7 +32,8 @@ let update_prices (updates, s: update list * storage): operation list * storage 
             fun ((ops, s), update : (operation list * storage) * update) -> 
                 if Set.mem update.coins_pair s.valid_pairs
                 then
-                    (Tezos.emit "%price_update" update) :: ops,
+                    //(Tezos.emit "%price_update" update) :: ops,
+                    ops,
                     { 
                         s with 
                             exchange_rates = 

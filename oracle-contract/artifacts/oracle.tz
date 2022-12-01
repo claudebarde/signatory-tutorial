@@ -103,7 +103,7 @@
                                   CDR ;
                                   PAIR ;
                                   SOME ;
-                                  DUP 6 ;
+                                  DIG 5 ;
                                   CAR ;
                                   UPDATE ;
                                   DIG 3 ;
@@ -112,9 +112,6 @@
                                   PAIR ;
                                   PAIR ;
                                   SWAP ;
-                                  DIG 2 ;
-                                  EMIT %price_update (pair (string %coins_pair) (nat %exchange_rate)) ;
-                                  CONS ;
                                   PAIR }
                                 { DROP 2 ; CAR ; PUSH string "INVALID_COINS_PAIR:" ; CONCAT ; FAILWITH } } } } }
             { DROP 2 ; PUSH string "NOT_AN_ADMIN" ; FAILWITH } } ;
