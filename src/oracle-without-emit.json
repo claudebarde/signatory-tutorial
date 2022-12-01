@@ -163,9 +163,9 @@
                                                   { "prim": "CDR" },
                                                   { "prim": "PAIR" },
                                                   { "prim": "SOME" },
-                                                  { "prim": "DUP",
+                                                  { "prim": "DIG",
                                                     "args":
-                                                      [ { "int": "6" } ] },
+                                                      [ { "int": "5" } ] },
                                                   { "prim": "CAR" },
                                                   { "prim": "UPDATE" },
                                                   { "prim": "DIG",
@@ -176,23 +176,6 @@
                                                   { "prim": "PAIR" },
                                                   { "prim": "PAIR" },
                                                   { "prim": "SWAP" },
-                                                  { "prim": "DIG",
-                                                    "args":
-                                                      [ { "int": "2" } ] },
-                                                  { "prim": "EMIT",
-                                                    "args":
-                                                      [ { "prim": "pair",
-                                                          "args":
-                                                            [ { "prim":
-                                                                  "string",
-                                                                "annots":
-                                                                  [ "%coins_pair" ] },
-                                                              { "prim": "nat",
-                                                                "annots":
-                                                                  [ "%exchange_rate" ] } ] } ],
-                                                    "annots":
-                                                      [ "%price_update" ] },
-                                                  { "prim": "CONS" },
                                                   { "prim": "PAIR" } ],
                                                 [ { "prim": "DROP",
                                                     "args":
