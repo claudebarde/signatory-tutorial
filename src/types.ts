@@ -1,7 +1,9 @@
 import type { BigMapAbstraction } from "@taquito/taquito";
 
-export interface Storage {
+interface GenericStorage {
   valid_pairs: Array<string>;
   exchange_rates: BigMapAbstraction;
   admin: string;
 }
+
+export type Storage = Readonly<GenericStorage>;
