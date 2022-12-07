@@ -12,9 +12,6 @@ tezos:
   tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb:
     log_payloads: true
     allow:
-      block:
-      endorsement:
-      preendorsement:
       generic:
         - transaction
         - origination
