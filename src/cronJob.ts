@@ -4,6 +4,7 @@ import { TezosToolkit } from "@taquito/taquito";
 import { RemoteSigner } from "@taquito/remote-signer";
 import { flextesaUrl, signatorySigner, signatoryPort } from "./config";
 
+const availableCoins = ["bitcoin", "ethereum", "tezos"];
 const coinToCoinpair = (coin: string): string => {
   switch (coin) {
     case "bitcoin":
@@ -29,14 +30,12 @@ export const updateOracle = async (contractAddress: string) => {
 
   // NOTE: cron job set to 1 minute for demonstration purposes
   const scheduledJobFunction = CronJob.schedule("*/1 * * * *", async () => {
-    const availableCoins = ["bitcoin", "ethereum", "tezos"];
     const res = await CoinGeckoClient.simple.price({
       ids: availableCoins,
       vs_currencies: "usd"
     });
     if (res.success && res.code === 200) {
-      console.log(res.data);
-      // sends a transaction to updsate the oracle
+      // sends a transaction to update the oracle
       try {
         const op = await contract.methods
           .update_prices(
@@ -57,6 +56,7 @@ export const updateOracle = async (contractAddress: string) => {
                 }
               })
               .filter(el => el)
+              .filter(el => el?.coins_pair === "unknown")
           )
           .send();
         await op.confirmation();
